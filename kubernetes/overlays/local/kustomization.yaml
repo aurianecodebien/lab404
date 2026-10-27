@@ -4,9 +4,9 @@ resources:
   - ../../base
 images:
   - name: ghcr.io/leofvo/lab404-web
-    newName: ghcr.io/leofvo/lab404-web
+    newName: ghcr.io/aurianecodebien/lab404-web
     newTag: latest
   - name: ghcr.io/leofvo/lab404-votes
-    newName: ghcr.io/leofvo/lab404-votes
+    newName: ghcr.io/aurianecodebien/lab404-votes
     newTag: latest
 
