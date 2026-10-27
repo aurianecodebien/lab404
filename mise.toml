@@ -3,6 +3,7 @@ helm = "4.2.2"
 kind = "0.32.0"
 kubectl = "1.35.0"
 kustomize = "5.8.1"
+trivy = "0.72.0"
 
 [tasks.check-tools]
 description = "Check required host tools"
