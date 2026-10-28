@@ -1,10 +1,6 @@
-# Kustomize renders Helm hooks as ordinary resources, so hook Jobs would run on
-# every apply. The pre-delete cleanup Jobs would scale Kyverno to zero and remove
-# its webhooks, silently disabling admission control.
 webhooksCleanup:
   enabled: false
 
-# The post-upgrade migration Job is only meaningful for Helm upgrades.
 crds:
   migration:
     enabled: false

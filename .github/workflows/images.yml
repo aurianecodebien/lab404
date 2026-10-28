@@ -178,7 +178,6 @@ jobs:
           name: build-${{ matrix.service }}-${{ matrix.arch }}
           path: /tmp/build
 
-      # CIS-DI-0010 flags gunicorn's --access-logfile option as a credential.
       - name: Audit the platform manifest
         env:
           OWNER: ${{ github.repository_owner }}

@@ -24,9 +24,6 @@ spec:
         'images must be referenced by digest: ' +
         variables.images.filter(image, !image.matches('@sha256:[a-f0-9]{64}$')).join(', ')
 ---
-# Ephemeral containers are added through the pods/ephemeralcontainers
-# subresource (kubectl debug). Subresources cannot be listed or watched, so this
-# policy is enforced at admission only, without background scanning.
 apiVersion: policies.kyverno.io/v1
 kind: NamespacedValidatingPolicy
 metadata:

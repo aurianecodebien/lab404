@@ -1,7 +1,4 @@
 apiVersion: policies.kyverno.io/v1
-# Cluster-scoped on purpose: Kyverno 1.18.2 registers namespaced image policy
-# webhooks on /nivpol paths that its server does not serve, which fails closed
-# for every namespace. The namespaceSelector keeps the scope to lab404.
 kind: ImageValidatingPolicy
 metadata:
   name: verify-image-signatures
@@ -10,12 +7,9 @@ spec:
   failurePolicy: Fail
   webhookConfiguration:
     timeoutSeconds: 15
-  # Ephemeral containers go through a subresource that cannot be watched, so
-  # signatures are verified at admission only.
   evaluation:
     background:
       enabled: false
-  # Digests are required by require-image-digests; never rewrite tags here.
   validationConfigurations:
     mutateDigest: false
     verifyDigest: true
@@ -29,7 +23,6 @@ spec:
         apiVersions: [v1]
         operations: [CREATE, UPDATE]
         resources: [pods, pods/ephemeralcontainers]
-  # Match both name@digest and name:tag@digest so a tag cannot skip verification.
   matchImageReferences:
     - glob: ghcr.io/aurianecodebien/lab404-web@*
     - glob: ghcr.io/aurianecodebien/lab404-web:*
