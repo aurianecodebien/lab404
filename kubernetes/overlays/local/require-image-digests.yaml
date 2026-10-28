@@ -4,8 +4,8 @@ metadata:
   name: require-image-digests
   namespace: lab404
 spec:
-  validationActions: [Audit]
-  failurePolicy: Ignore
+  validationActions: [Deny]
+  failurePolicy: Fail
   matchConstraints:
     resourceRules:
       - apiGroups: [""]
@@ -33,8 +33,8 @@ metadata:
   name: require-ephemeral-image-digests
   namespace: lab404
 spec:
-  validationActions: [Audit]
-  failurePolicy: Ignore
+  validationActions: [Deny]
+  failurePolicy: Fail
   evaluation:
     background:
       enabled: false

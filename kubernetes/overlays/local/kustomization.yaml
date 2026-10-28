@@ -10,4 +10,10 @@ images:
   - name: ghcr.io/leofvo/lab404-votes
     newName: ghcr.io/aurianecodebien/lab404-votes
     digest: sha256:71d06737252afaa16894eb34b69bb0747edebacb3ad1750b8f21e0677d8165eb
+  - name: nginx
+    newTag: latest
+    digest: sha256:600f7cd45e27aa13e9304c834ab7c1b0ff39df85ee1dcc5087955455d77bc83b
+  - name: valkey/valkey
+    newTag: 8.1-alpine
+    digest: sha256:2602ace2be6569bc2bbb06f873776516ab9089821525be34f4305c67eb9db02a
 
