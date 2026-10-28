@@ -18,6 +18,7 @@ spec:
         app.kubernetes.io/component: proxy
         app.kubernetes.io/part-of: lab404
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: nginx
           image: nginx:latest

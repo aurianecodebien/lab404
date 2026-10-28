@@ -18,6 +18,7 @@ spec:
         app.kubernetes.io/component: backend
         app.kubernetes.io/part-of: lab404
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: votes
           image: ghcr.io/leofvo/lab404-votes:latest

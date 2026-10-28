@@ -18,6 +18,7 @@ spec:
         app.kubernetes.io/component: frontend
         app.kubernetes.io/part-of: lab404
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: web
           image: ghcr.io/leofvo/lab404-web:latest

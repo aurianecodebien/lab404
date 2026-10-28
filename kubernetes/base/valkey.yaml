@@ -29,6 +29,7 @@ spec:
         app.kubernetes.io/component: data
         app.kubernetes.io/part-of: lab404
     spec:
+      automountServiceAccountToken: false
       nodeSelector:
         lab404.io/workload: stateful
       tolerations:
