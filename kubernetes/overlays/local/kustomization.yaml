@@ -5,8 +5,8 @@ resources:
 images:
   - name: ghcr.io/leofvo/lab404-web
     newName: ghcr.io/aurianecodebien/lab404-web
-    newTag: latest
+    digest: sha256:ec8259f44568c3d6fac52fcafd6819320a6a192ed32ec45cb012004d334dcc5e
   - name: ghcr.io/leofvo/lab404-votes
     newName: ghcr.io/aurianecodebien/lab404-votes
-    newTag: latest
+    digest: sha256:71d06737252afaa16894eb34b69bb0747edebacb3ad1750b8f21e0677d8165eb
 
