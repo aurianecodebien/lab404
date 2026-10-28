@@ -19,6 +19,13 @@ spec:
         app.kubernetes.io/part-of: lab404
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: web
           image: ghcr.io/leofvo/lab404-web:latest
@@ -39,6 +46,21 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: gunicorn
+              mountPath: /home/nonroot/.gunicorn
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: gunicorn
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

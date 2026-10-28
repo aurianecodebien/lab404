@@ -19,12 +19,38 @@ spec:
         app.kubernetes.io/part-of: lab404
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: nginx
           image: nginx:latest
+          command: ["nginx", "-g", "daemon off;"]
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          configMap:
+            name: nginx
+        - name: tmp
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

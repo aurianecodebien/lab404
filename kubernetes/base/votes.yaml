@@ -19,6 +19,13 @@ spec:
         app.kubernetes.io/part-of: lab404
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: votes
           image: ghcr.io/leofvo/lab404-votes:latest
@@ -40,6 +47,11 @@ spec:
           ports:
             - name: http
               containerPort: 8081
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
 ---
 apiVersion: v1
 kind: Service
