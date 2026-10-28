@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../base
   - require-image-digests.yaml
+  - verify-image-signatures.yaml
 images:
   - name: ghcr.io/leofvo/lab404-web
     newName: ghcr.io/aurianecodebien/lab404-web

@@ -1,0 +1,53 @@
+apiVersion: policies.kyverno.io/v1
+# Cluster-scoped on purpose: Kyverno 1.18.2 registers namespaced image policy
+# webhooks on /nivpol paths that its server does not serve, which fails closed
+# for every namespace. The namespaceSelector keeps the scope to lab404.
+kind: ImageValidatingPolicy
+metadata:
+  name: verify-image-signatures
+spec:
+  validationActions: [Deny]
+  failurePolicy: Fail
+  webhookConfiguration:
+    timeoutSeconds: 15
+  # Ephemeral containers go through a subresource that cannot be watched, so
+  # signatures are verified at admission only.
+  evaluation:
+    background:
+      enabled: false
+  # Digests are required by require-image-digests; never rewrite tags here.
+  validationConfigurations:
+    mutateDigest: false
+    verifyDigest: true
+    required: true
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: lab404
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods, pods/ephemeralcontainers]
+  # Match both name@digest and name:tag@digest so a tag cannot skip verification.
+  matchImageReferences:
+    - glob: ghcr.io/aurianecodebien/lab404-web@*
+    - glob: ghcr.io/aurianecodebien/lab404-web:*
+    - glob: ghcr.io/aurianecodebien/lab404-votes@*
+    - glob: ghcr.io/aurianecodebien/lab404-votes:*
+  attestors:
+    - name: imagesWorkflow
+      cosign:
+        keyless:
+          identities:
+            - issuer: https://token.actions.githubusercontent.com
+              subject: https://github.com/aurianecodebien/lab404/.github/workflows/images.yml@refs/heads/main
+        ctlog:
+          url: https://rekor.sigstore.dev
+  validations:
+    - expression: >-
+        images.all(kind, images[kind].all(image,
+        verifyImageSignatures(image, [attestors.imagesWorkflow]) > 0))
+      message: >-
+        lab404 images must be signed by the aurianecodebien/lab404 images workflow
+        on refs/heads/main
