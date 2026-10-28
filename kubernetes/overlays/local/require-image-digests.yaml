@@ -1,0 +1,55 @@
+apiVersion: policies.kyverno.io/v1
+kind: NamespacedValidatingPolicy
+metadata:
+  name: require-image-digests
+  namespace: lab404
+spec:
+  validationActions: [Audit]
+  failurePolicy: Ignore
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  variables:
+    - name: images
+      expression: >-
+        object.spec.containers.map(c, c.image) +
+        (has(object.spec.initContainers) ? object.spec.initContainers.map(c, c.image) : []) +
+        (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers.map(c, c.image) : [])
+  validations:
+    - expression: variables.images.all(image, image.matches('@sha256:[a-f0-9]{64}$'))
+      messageExpression: >-
+        'images must be referenced by digest: ' +
+        variables.images.filter(image, !image.matches('@sha256:[a-f0-9]{64}$')).join(', ')
+---
+# Ephemeral containers are added through the pods/ephemeralcontainers
+# subresource (kubectl debug). Subresources cannot be listed or watched, so this
+# policy is enforced at admission only, without background scanning.
+apiVersion: policies.kyverno.io/v1
+kind: NamespacedValidatingPolicy
+metadata:
+  name: require-ephemeral-image-digests
+  namespace: lab404
+spec:
+  validationActions: [Audit]
+  failurePolicy: Ignore
+  evaluation:
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [UPDATE]
+        resources: [pods/ephemeralcontainers]
+  variables:
+    - name: images
+      expression: >-
+        has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers.map(c, c.image) : []
+  validations:
+    - expression: variables.images.all(image, image.matches('@sha256:[a-f0-9]{64}$'))
+      messageExpression: >-
+        'ephemeral container images must be referenced by digest: ' +
+        variables.images.filter(image, !image.matches('@sha256:[a-f0-9]{64}$')).join(', ')
