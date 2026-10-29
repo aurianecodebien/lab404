@@ -8,6 +8,7 @@ resources:
   - valkey.yaml
   - gateway.yaml
   - nginx.yaml
+  - network-policies.yaml
 configMapGenerator:
   - name: nginx
     files:
