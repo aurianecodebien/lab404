@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - web.yaml
   - votes.yaml
+  - valkey-sealedsecret.yaml
   - valkey.yaml
   - gateway.yaml
   - nginx.yaml
