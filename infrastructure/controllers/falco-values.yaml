@@ -1,0 +1,32 @@
+driver:
+  kind: modern_ebpf
+  modernEbpf:
+    leastPrivileged: true
+
+falcoctl:
+  artifact:
+    follow:
+      enabled: false
+  config:
+    artifact:
+      install:
+        refs: [falco-rules:5.2.0]
+      follow:
+        refs: [falco-rules:5.2.0]
+
+falco:
+  json_output: true
+  json_include_output_property: true
+  json_include_tags_property: true
+  stdout_output:
+    enabled: true
+
+tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/control-plane
+  - effect: NoSchedule
+    key: workload
+    operator: Equal
+    value: stateful
